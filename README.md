@@ -1,15 +1,18 @@
 # Ex.05 Design a Website for Server Side Processing
-## Date:26.04.2025
+## Date:26-04-2025
 
 ## AIM:
-To design a website to find total surface area of a square prism in server side.
+ To design a website to calculate the power of a lamp filament in an incandescent bulb in the server side. 
+
 
 ## FORMULA:
-Total Surface Area = 2b<sup>2</sup> + 4bh
-<br>b --> Base of Square Prism
-<br>h --> Height of Square Prism
+P = I<sup>2</sup>R
+<br> P --> Power (in watts)
+<br> I --> Intensity
+<br> R --> Resistance
 
 ## DESIGN STEPS:
+
 
 ### Step 1:
 Clone the repository from GitHub.
@@ -30,111 +33,129 @@ Create a HTML file to implement form based input and output.
 Publish the website in the given URL.
 
 ## PROGRAM :
-views.py
-```
-from django.shortcuts import render
-def rectarea(request):
-    context={}
-    context['area'] = "0"
-    context['l'] = "0"
-    context['b'] = "0"
-    if request.method == 'POST':
-        print("POST method is used")
-        l = request.POST.get('length','0')
-        b = request.POST.get('breadth','0')
-        print('request=',request)
-        print('Length=',l)
-        print('Breadth=',b)
-        area = int(l) * int(b)
-        context['area'] = area
-        context['l'] = l
-        context['b'] = b
-        print('Area=',area)
-    return render(request,'mapapp/maths.html',context)
-```
-urls.py
-```
-from django.contrib import admin
-from django.urls import path
-from mapapp import views
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('areaofrectangle/',views.rectarea,name="areaofrectangle"),
-    path('',views.rectarea,name="areaofrectangleroot")
-]
-```
-maths.html
+
+math.html
+
 ```
 <html>
 <head>
-<meta charset='utf-8'>
-<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-<title>Area of Rectangle</title>
-<meta name='viewport' content='width=device-width, initial-scale=1'>
-<style type="text/css">
-body 
-{
-background-color:grey;
-}
-.edge {
-width: 1440px;
-margin-left: auto;
-margin-right: auto;
-padding-top: 250px;
-padding-left: 300px;
-}
-.box {
-display:block;
-border: Thick dashed green;
-width: 500px;
-min-height: 300px;
-font-size: 20px;
-background-color:rebeccapurple;
-}
-.formelt{
-color:orange;
-text-align: center;
-margin-top: 7px;
-margin-bottom: 6px;
-}
-h1
-{
-color:rgb(255, 0, 179);
-text-align: center;
-padding-top: 20px;
-}
-</style>
+    <title>Power Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightgrey;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: darkblue;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px grey;
+            display: inline-block;
+            margin: auto;
+        }
+
+        label {
+            font-weight: bold;
+            color: black;
+        }
+
+        input[type="number"] {
+            padding: 5px;
+            margin: 10px 0;
+            border: 1px solid black;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: darkblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: navy;
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="edge">
-<div class="box">
-<h1>Area of a Rectangle</h1>
-<form method="POST">
-{% csrf_token %}
-<div class="formelt">
- Length : <input type="text" name="length" value="{{l}}"></input>(in m)<br/>
-</div>
-<div class="formelt">
- Breadth : <input type="text" name="breadth" value="{{b}}"></input>(in m)<br/>
-</div>
-<div class="formelt">
-<input type="submit" value="Calculate"></input><br/>
-</div>
-<div class="formelt">
- Area : <input type="text" name="area" value="{{area}}"></input>m<sup>2</sup><br/>
-</div>
-</form>
-</div>
-</div>
-
+    <h1>Power Calculator</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="I">Enter Current (I in Amps):</label>
+        <input type="number" name="intensity" id="I" value="{{ I }}" required>
+        <br><br>
+        <label for="R">Enter Resistance (R in Ohms):</label>
+        <input type="number" name="resistance" id="R" value="{{ R }}" required>
+        <br><br>
+        <button type="submit">Calculate Power</button>
+        <br><br>
+        <label for="power">Calculated Power (Watts):</label>
+        <input type="number" name="power" id="power" value="{{ power }}" readonly>
+    </form>
 </body>
 </html>
+
 ```
-## OUTPUT:
-![image](https://github.com/Boobeshkrishna/MathServer/assets/141472052/cedd1aa6-c968-4f5f-9c0c-3d82badc54c5)
-![image](https://github.com/Boobeshkrishna/MathServer/assets/141472052/4daaa5d9-5cad-4fdb-8885-65da674bb6b5)
+
+views.py
+
+```
+from django.shortcuts import render 
+def powercalc(request): 
+    context={} 
+    context['power'] = "0" 
+    context['I'] = "0" 
+    context['R'] = "0" 
+    if request.method == 'POST': 
+        print("POST method is used")
+        I = request.POST.get('intensity','0')
+        R = request.POST.get('resistance','0')
+        print('request=',request) 
+        print('intensity=',I) 
+        print('resistance=',R) 
+        power = (int(I) * int(I) ) * int(R) 
+        context['power'] = power
+        context['intensity'] = I
+        context['resistance'] = R 
+        print('power=',power) 
+    return render(request,'mathapp/math.html',context)
+
+```
+
+urls.py
+
+```
+from django.contrib import admin 
+from django.urls import path 
+from mathapp import views 
+urlpatterns = [ 
+    path('admin/', admin.site.urls), 
+    path('powercalculator/',views.powercalc,name="powercalculator"),
+    path('',views.powercalc,name="powercalculatorroot")
+]
+
+```
+
+
+## SERVER SIDE PROCESSING:
+
+![image](https://github.com/user-attachments/assets/83b57d3b-90db-46ee-9799-b5267c3e79bf)
+
+
+## HOMEPAGE:
+
+![image](https://github.com/user-attachments/assets/1585f4c5-7c20-4c74-b145-60d367e2b889)
 
 
 ## RESULT:
