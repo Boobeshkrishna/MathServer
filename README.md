@@ -1,5 +1,7 @@
 # Ex.05 Design a Website for Server Side Processing
-## Date:26-04-2025
+## REG NO:212222233001
+## NAME:BOOBESH PM
+## Date:26/05/2025
 
 ## AIM:
  To design a website to calculate the power of a lamp filament in an incandescent bulb in the server side. 
@@ -12,7 +14,6 @@ P = I<sup>2</sup>R
 <br> R --> Resistance
 
 ## DESIGN STEPS:
-
 
 ### Step 1:
 Clone the repository from GitHub.
@@ -33,130 +34,120 @@ Create a HTML file to implement form based input and output.
 Publish the website in the given URL.
 
 ## PROGRAM :
-
-math.html
-
 ```
+math.html
 <html>
 <head>
-    <title>Power Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: lightgrey;
-            margin: 20px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: darkblue;
-        }
-
-        form {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px grey;
-            display: inline-block;
-            margin: auto;
-        }
-
-        label {
-            font-weight: bold;
-            color: black;
-        }
-
-        input[type="number"] {
-            padding: 5px;
-            margin: 10px 0;
-            border: 1px solid black;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: darkblue;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: navy;
-        }
-    </style>
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+<title>Power of a Lamp Filament</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style type="text/css">
+body 
+{
+background-color:rgb(192, 255, 253);
+}
+.edge {
+width: 1440px;
+margin-left: auto;
+margin-right: auto;
+padding-top: 250px;
+padding-left: 300px;
+}
+.box {
+display:block;
+border: Thick dashed rgb(139, 144, 112);
+width: 500px;
+min-height: 300px;
+font-size: 20px;
+background-color:hsl(26, 25%, 46%);
+}
+.formelt{
+color:rgba(85, 13, 229, 0.934);
+text-align: center;
+margin-top: 7px;
+margin-bottom: 6px;
+}
+h1
+{
+color:rgb(0, 255, 60);
+text-align: center;
+padding-top: 20px;
+}
+</style>
 </head>
 <body>
-    <h1>Power Calculator</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="I">Enter Current (I in Amps):</label>
-        <input type="number" name="intensity" id="I" value="{{ I }}" required>
-        <br><br>
-        <label for="R">Enter Resistance (R in Ohms):</label>
-        <input type="number" name="resistance" id="R" value="{{ R }}" required>
-        <br><br>
-        <button type="submit">Calculate Power</button>
-        <br><br>
-        <label for="power">Calculated Power (Watts):</label>
-        <input type="number" name="power" id="power" value="{{ power }}" readonly>
-    </form>
+<div class="edge">
+<div class="box">
+<h1>Power of a Light Filament</h1>
+<form method="POST">
+{% csrf_token %}
+<div class="formelt">
+intensity : <input type="text" name="intensity" value="{{i}}"></input>(in Wm<sup>-2</sup>)<br/>
+</div>
+<div class="formelt">
+resistance : <input type="text" name="resistance" value="{{r}}"></input>(in ohm)<br/>
+</div>
+<div class="formelt">
+<input type="submit" value="Calculate"></input><br/>
+</div>
+<div class="formelt">
+Power : <input type="text" name="power" value="{{power}}"></input>(in W)<br/>
+</div>
+</form>
+</div>
+</div>
 </body>
 </html>
 
-```
-
 views.py
 
-```
-from django.shortcuts import render 
-def powercalc(request): 
-    context={} 
-    context['power'] = "0" 
-    context['I'] = "0" 
-    context['R'] = "0" 
-    if request.method == 'POST': 
+from django.shortcuts import render
+
+def power_calculator(request):
+    power = None 
+    intensity = None
+    resistance = None 
+
+    if request.method == 'POST':
         print("POST method is used")
-        I = request.POST.get('intensity','0')
-        R = request.POST.get('resistance','0')
-        print('request=',request) 
-        print('intensity=',I) 
-        print('resistance=',R) 
-        power = (int(I) * int(I) ) * int(R) 
-        context['power'] = power
-        context['intensity'] = I
-        context['resistance'] = R 
-        print('power=',power) 
-    return render(request,'mathapp/math.html',context)
+        
+        intensity = request.POST.get('intensity','0')
+        resistance = request.POST.get('resistance','0')
 
-```
+        
+        if intensity and resistance:
+            try:
+            
+                I = float(intensity)
+                R = float(resistance)
+                power = I**2 * R
+                print('request=',request)
+                print('intensity=',I)
+                print('resistance=',R)
+                print('power=',power)  
 
-urls.py
+            except ValueError:
+                power = "Invalid input. Please enter numerical values."
 
-```
-from django.contrib import admin 
-from django.urls import path 
-from mathapp import views 
-urlpatterns = [ 
-    path('admin/', admin.site.urls), 
-    path('powercalculator/',views.powercalc,name="powercalculator"),
-    path('',views.powercalc,name="powercalculatorroot")
+    
+    return render(request, 'mathsapp/math.html', {'power': power, 'intensity': intensity, 'resistance': resistance})
+
+    urls.py
+    from django.contrib import admin
+from django.urls import path
+from mathsapp import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.power_calculator, name='power_calculator'),  
 ]
-
 ```
-
-
 ## SERVER SIDE PROCESSING:
-
-![image](https://github.com/user-attachments/assets/83b57d3b-90db-46ee-9799-b5267c3e79bf)
-
+![Screenshot 2025-04-28 230913](https://github.com/user-attachments/assets/54fbbd35-cefe-42b7-b0af-bf0196ddac9e)
 
 ## HOMEPAGE:
-
-![image](https://github.com/user-attachments/assets/1585f4c5-7c20-4c74-b145-60d367e2b889)
-
+![Screenshot 2025-04-28 211841](https://github.com/user-attachments/assets/f6a337dd-565b-41de-aa8b-8fe139d162e0)
 
 ## RESULT:
 The program for performing server side processing is completed successfully.
